@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Salva meu Roteiro! - AutoSave TinyMCE HTML (IndexedDB)
 // @namespace    https://plataforma-algetec.grupoa.education/
-// @version      1.2.8
+// @version      1.2.9
 // @description  Salva automaticamente o HTML do editor WYSIWYG TinyMCE usando IndexedDB e exibe as últimas 5 versões salvas.
 // @author       inimig0r
 // @updateURL    https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/SalvaMeuRoteiro.js
