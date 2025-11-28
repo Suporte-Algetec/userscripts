@@ -3,7 +3,9 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.1
 // @description  Adiciona um botão para buscar e substituir texto na janela de código-fonte do editor TinyMCE
-// @author       inimigor
+// @author       inimig0r
+// @updateURL    https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/BSTinyMCE.js
+// @downloadURL  https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/BSTinyMCE.js
 // @match        *://grupoa.education/creator/composite-object/*
 // @match        *://plataforma-algetec.grupoa.education/dashboard/documents/edit/*
 // @grant        none

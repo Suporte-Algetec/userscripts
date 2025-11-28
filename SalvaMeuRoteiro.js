@@ -3,7 +3,9 @@
 // @namespace    https://plataforma-algetec.grupoa.education/
 // @version      1.2.8
 // @description  Salva automaticamente o HTML do editor WYSIWYG TinyMCE usando IndexedDB e exibe as últimas 5 versões salvas.
-// @author       inimigor
+// @author       inimig0r
+// @updateURL    https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/SalvaMeuRoteiro.js
+// @downloadURL  https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/SalvaMeuRoteiro.js
 // @match        *://plataforma-algetec.grupoa.education/dashboard/documents/edit/*
 // @match        *://grupoa.education/creator/composite-object/*
 // @grant        none
