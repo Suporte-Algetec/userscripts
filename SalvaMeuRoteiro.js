@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Salva meu Roteiro! - AutoSave TinyMCE HTML (IndexedDB)
 // @namespace    https://plataforma-algetec.grupoa.education/
-// @version      1.2.9
+// @version      1.3.0
 // @description  Salva automaticamente o HTML do editor WYSIWYG TinyMCE usando IndexedDB e exibe as últimas 5 versões salvas.
 // @author       inimig0r
 // @updateURL    https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/SalvaMeuRoteiro.js
 // @downloadURL  https://raw.githubusercontent.com/Suporte-Algetec/userscripts/refs/heads/main/SalvaMeuRoteiro.js
-// @match        *://plataforma-algetec.grupoa.education/dashboard/documents/edit/*
+// @match        *://plataforma-algetec.grupoa.education/dashboard/*
 // @match        *://grupoa.education/creator/composite-object/*
 // @grant        none
 // ==/UserScript==
@@ -14,10 +14,66 @@
 (function () {
     'use strict';
 
-    const autoSaveInterval = 3 * 60 * 1000; // Salvar a cada 5 minutos
+    const autoSaveInterval = 3 * 60 * 1000; // Salvar a cada 3 minutos
     const versionLimit = 10;
     const dbName = "TinyMCEAutoSaveDB";
     const storeName = "versions";
+
+    // ─── Substituição de logo (10% de chance) ────────────────────────────────
+
+    function maybeReplaceLogo() {
+        if (Math.random() >= 0.1) return; // 10% de chance de não fazer nada
+
+        const tryInsert = () => {
+            const header = document.querySelector('header.ant-layout-header');
+            if (!header) return false;
+
+            // Evita inserir mais de uma vez
+            if (header.dataset.diversoes) return true;
+            header.dataset.diversoes = "true";
+
+            if (!document.querySelector('#pacifico-font-import')) {
+                const style = document.createElement('style');
+                style.id = 'pacifico-font-import';
+                style.textContent = "@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');";
+                document.head.appendChild(style);
+            }
+
+            const texto = document.createElement('span');
+            texto.textContent = 'Plataforma Diversões 🤪';
+            texto.style.fontFamily = "'Pacifico', cursive";
+            texto.style.fontSize = '30px';
+            texto.style.color = '#bb243e';
+            texto.style.whiteSpace = 'nowrap';
+            texto.style.marginRight = 'auto';
+            texto.style.paddingRight = '10px';
+
+            // Insere entre o primeiro div (logo+botão) e o segundo div (avatar+switch)
+            const [leftDiv, rightDiv] = header.querySelectorAll(':scope > div');
+            if (rightDiv) {
+                header.insertBefore(texto, rightDiv);
+            } else {
+                header.appendChild(texto);
+            }
+            return true;
+        };
+
+        if (!tryInsert()) {
+            const observer = new MutationObserver(() => {
+                if (tryInsert()) observer.disconnect();
+            });
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+        }
+    }
+
+    maybeReplaceLogo();
+
+    // ─── IndexedDB / AutoSave (apenas em /dashboard/documents/edit/) ──────────
+
+    const isEditorPage = /\/dashboard\/documents\/edit\//.test(location.pathname)
+        || /\/creator\/composite-object\//.test(location.pathname);
+
+    if (!isEditorPage) return; // Sai aqui — logo já foi tratada acima
 
     function openDB(callback) {
         const request = indexedDB.open(dbName, 1);
@@ -56,7 +112,7 @@
             store.get(getStorageKey()).onsuccess = function (event) {
                 let versions = event.target.result?.versions || [];
                 versions.unshift({ timestamp: new Date().toISOString(), content: htmlContent });
-                versions = versions.slice(0, versionLimit); // Mantém no máximo 5 versões
+                versions = versions.slice(0, versionLimit);
 
                 store.put({ id: getStorageKey(), versions });
                 console.log("HTML salvo no IndexedDB.");
@@ -200,6 +256,7 @@
     `);
                         newTab.document.close();
                     });
+
                     const deleteButton = document.createElement("button");
                     deleteButton.textContent = "Apagar";
                     deleteButton.style.padding = "4px 8px";
